@@ -17,7 +17,8 @@ composer require gephart/annotation
 Using
 ---
 
-@AnnotationName {"anything":"in JSON"}
+@AnnotationName value
+@AnnotationName {"or anything":"in JSON"}
 
 ```
 /**
