@@ -33,7 +33,7 @@ final class Reader
 
     private function parseAnnotation(string $raw_doc): array
     {
-        preg_match_all("/@([A-Za-z0-9]+)([^@.]*)/s", $raw_doc, $matches);
+        preg_match_all("/@([A-Za-z0-9]+)([^@]*)/s", $raw_doc, $matches);
 
         $annotations = [];
 
@@ -69,7 +69,7 @@ final class Reader
         }
 
         if (json_last_error()) {
-            $detail = "@" . $this->annotation . " in " . $this->class_name . $this->method_name ? "::" . $this->method_name : "";
+            $detail = "@" . $this->annotation . " in " . $this->class_name . ($this->method_name ? "::" . $this->method_name : "");
             throw new \Exception("Annotation value of '{$detail}' is not a valid JSON . ");
         }
 
