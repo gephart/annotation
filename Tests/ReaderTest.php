@@ -39,6 +39,7 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAll()
     {
+        $reader = new \Gephart\Annotation\Reader();
         $annotations = $reader->getAll(SuperClass::class, "index");
 
         $this->assertEquals(["url" => "index.html"], $annotations["Template"]);
