@@ -42,6 +42,6 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $annotations = $reader->getAll(SuperClass::class, "index");
 
         $this->assertEquals(["url" => "index.html"], $annotations["Template"]);
-        $this->assertEquals("/index", $annotation["Route"]);
+        $this->assertEquals("/index", $annotations["Route"]);
     }
 }
