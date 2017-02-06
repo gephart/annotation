@@ -16,6 +16,9 @@ composer require gephart/annotation
 
 Using
 ---
+
+@AnnotationName {"anything":"in JSON"}
+
 ```
 /**
  * @Route /home/

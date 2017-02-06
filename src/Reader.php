@@ -41,7 +41,7 @@ final class Reader
             $annotation_name = trim($annotation_name);
             $annotation_value = $matches[2][$key];
 
-            $annotation_value = $this->cleanAnnotationValue($annotation_value);
+            $annotation_value = $this->cleanValue($annotation_value);
             $annotation_value = $this->validateValue($annotation_value);
 
             $annotations[$annotation_name] = $annotation_value;
@@ -50,7 +50,7 @@ final class Reader
         return $annotations;
     }
 
-    private function cleanAnnotationValue(string $annotation_value): string
+    private function cleanValue(string $annotation_value): string
     {
         $lines = explode("\n", $annotation_value);
         foreach ($lines as $key => $line) {
