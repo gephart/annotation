@@ -44,7 +44,7 @@ final class Reader
             $annotation_value = $this->cleanAnnotationValue($annotation_value);
             $annotation_value = $this->validateValue($annotation_value);
 
-            $annotations[$annotation_name] = trim($annotation_value);
+            $annotations[$annotation_name] = $annotation_value;
         }
 
         return $annotations;
@@ -57,7 +57,7 @@ final class Reader
             $lines[$key] = trim($line, "* \t\r()");
         }
 
-        return implode(" ", $lines);
+        return trim(implode(" ", $lines));
     }
 
     private function validateValue(string $annotation_value)
