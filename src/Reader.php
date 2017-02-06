@@ -4,30 +4,37 @@ namespace Gephart\Annotation;
 
 final class Reader
 {
-    private $annotation;
     private $class_name;
     private $method_name;
 
     public function get(string $annotation, string $class_name, string $method_name = null)
     {
-        $this->annotation = $annotation;
+        $annotations = $this->getAll($class_name, $method_name);
+
+        return !empty($annotations[$annotation]) ? $annotations[$annotation] : false;
+    }
+
+    public function getAll(string $class_name, string $method_name = null)
+    {
         $this->class_name = $class_name;
         $this->method_name = $method_name;
 
         $raw = $this->getRawDoc($class_name, $method_name);
         $annotations = $this->parseAnnotation($raw);
 
-        return !empty($annotations[$annotation]) ? $annotations[$annotation] : false;
+        return $annotations;
     }
 
     private function getRawDoc(string $class_name, string $method_name = null): string
     {
-        $rc = new \ReflectionClass($class_name);
+        $reflection_class = new \ReflectionClass($class_name);
+
         if ($method_name) {
-            $doc = $rc->getMethod($method_name)->getDocComment();
+            $doc = $reflection_class->getMethod($method_name)->getDocComment();
         } else {
-            $doc = $rc->getDocComment();
+            $doc = $reflection_class->getDocComment();
         }
+
         return trim($doc, "/");
     }
 
@@ -42,7 +49,7 @@ final class Reader
             $annotation_value = $matches[2][$key];
 
             $annotation_value = $this->cleanValue($annotation_value);
-            $annotation_value = $this->validateValue($annotation_value);
+            $annotation_value = $this->validateValue($annotation_name, $annotation_value);
 
             $annotations[$annotation_name] = $annotation_value;
         }
@@ -60,7 +67,7 @@ final class Reader
         return trim(implode(" ", $lines));
     }
 
-    private function validateValue(string $annotation_value)
+    private function validateValue(string $annotation_name, string $annotation_value)
     {
         $decode = json_decode($annotation_value, true);
 
@@ -69,7 +76,7 @@ final class Reader
         }
 
         if (json_last_error()) {
-            $detail = "@" . $this->annotation . " in " . $this->class_name . ($this->method_name ? "::" . $this->method_name : "");
+            $detail = "@" . $annotation_name . " in " . $this->class_name . ($this->method_name ? "::" . $this->method_name : "");
             throw new \Exception("Annotation value of '{$detail}' is not a valid JSON . ");
         }
 
