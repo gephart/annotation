@@ -11,6 +11,7 @@ class SuperClass
      * @Template {
      *     "url": "index.html"
      * }
+     * @Route /index
      */
     public function index()
     {
@@ -31,5 +32,8 @@ class ReaderTest extends \PHPUnit_Framework_TestCase
         $reader = new \Gephart\Annotation\Reader();
         $annotation = $reader->get("Template", SuperClass::class, "index");
         $this->assertEquals(["url" => "index.html"], $annotation);
+
+        $annotation = $reader->get("Route", SuperClass::class, "index");
+        $this->assertEquals("/index", $annotation);
     }
 }

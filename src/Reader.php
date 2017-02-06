@@ -39,12 +39,12 @@ final class Reader
 
         foreach ($matches[1] as $key => $annotation_name) {
             $annotation_name = trim($annotation_name);
-            $annotation_value = trim($matches[2][$key]);
+            $annotation_value = $matches[2][$key];
 
             $annotation_value = $this->cleanAnnotationValue($annotation_value);
             $annotation_value = $this->validateValue($annotation_value);
 
-            $annotations[$annotation_name] = $annotation_value;
+            $annotations[$annotation_name] = trim($annotation_value);
         }
 
         return $annotations;
