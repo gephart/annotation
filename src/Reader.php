@@ -14,7 +14,7 @@ final class Reader
         return !empty($annotations[$annotation]) ? $annotations[$annotation] : false;
     }
 
-    public function getAll(string $class_name, string $method_name = null)
+    public function getAll(string $class_name, string $method_name = null): array
     {
         $this->class_name = $class_name;
         $this->method_name = $method_name;
