@@ -40,7 +40,7 @@ final class Reader
 
     private function parseAnnotation(string $raw_doc): array
     {
-        preg_match_all("/@([A-Za-z0-9]+)([^@]*)/s", $raw_doc, $matches);
+        preg_match_all("/@([A-Za-z0-9\\\\]+)([^@]*)/s", $raw_doc, $matches);
 
         $annotations = [];
 

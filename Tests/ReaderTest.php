@@ -12,6 +12,7 @@ class SuperClass
      *     "url": "index.html"
      * }
      * @Route /index
+     * @ORM\Table table
      */
     public function index()
     {
@@ -35,6 +36,9 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
 
         $annotation = $reader->get("Route", SuperClass::class, "index");
         $this->assertEquals("/index", $annotation);
+
+        $annotation = $reader->get("ORM\\Table", SuperClass::class, "index");
+        $this->assertEquals("table", $annotation);
     }
 
     public function testGetAll()
