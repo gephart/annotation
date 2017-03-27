@@ -8,7 +8,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 class SuperClass
 {
     /**
-     * @ORM\Type text
+     * @ORM\Type INT(6)
      */
     private $property;
 
@@ -46,7 +46,7 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("table", $annotation);
 
         $annotation = $reader->getAllProperty(SuperClass::class, "property");
-        $this->assertEquals("text", $annotation["ORM\\Type"]);
+        $this->assertEquals("INT(6)", $annotation["ORM\\Type"]);
     }
 
     public function testGetAll()

@@ -70,7 +70,7 @@ final class Reader
     {
         $lines = explode("\n", $annotation_value);
         foreach ($lines as $key => $line) {
-            $lines[$key] = trim($line, "* \t\r()");
+            $lines[$key] = trim($line, "* \t\r");
         }
 
         return trim(implode(" ", $lines));
