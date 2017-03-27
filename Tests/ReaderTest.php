@@ -8,6 +8,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 class SuperClass
 {
     /**
+     * @ORM\Type text
+     */
+    private $property;
+
+    /**
      * @Template {
      *     "url": "index.html"
      * }
@@ -39,6 +44,9 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
 
         $annotation = $reader->get("ORM\\Table", SuperClass::class, "index");
         $this->assertEquals("table", $annotation);
+
+        $annotation = $reader->getAllProperty(SuperClass::class, "property");
+        $this->assertEquals("text", $annotation["ORM\\Type"]);
     }
 
     public function testGetAll()

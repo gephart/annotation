@@ -25,6 +25,15 @@ final class Reader
         return $annotations;
     }
 
+    public function getAllProperty(string $class_name, string $property): array
+    {
+        $reflection_class = new \ReflectionClass($class_name);
+        $raw = trim($reflection_class->getProperty($property)->getDocComment(), "/");
+        $annotations = $this->parseAnnotation($raw);
+
+        return $annotations;
+    }
+
     private function getRawDoc(string $class_name, string $method_name = null): string
     {
         $reflection_class = new \ReflectionClass($class_name);
