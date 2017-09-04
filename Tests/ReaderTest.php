@@ -22,6 +22,13 @@ class SuperClass
     public function index()
     {
     }
+
+    /**
+     * @Template {text: "problem}
+     */
+    public function exception()
+    {
+    }
 }
 
 class ReaderTest extends \PHPUnit\Framework\TestCase
@@ -47,6 +54,15 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
 
         $annotation = $reader->getAllProperty(SuperClass::class, "property");
         $this->assertEquals("INT(6)", $annotation["ORM\\Type"]);
+    }
+
+    /**
+     * @expectedException \Gephart\Annotation\Exception\NotValidJsonException
+     */
+    public function testException()
+    {
+        $reader = new \Gephart\Annotation\Reader();
+        $reader->get("Template", SuperClass::class, "exception");
     }
 
     public function testGetAll()
