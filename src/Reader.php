@@ -75,10 +75,10 @@ final class Reader
     {
         $reflection_class = new \ReflectionClass($class_name);
 
+        $doc = $reflection_class->getDocComment();
+
         if ($method_name) {
             $doc = $reflection_class->getMethod($method_name)->getDocComment();
-        } else {
-            $doc = $reflection_class->getDocComment();
         }
 
         return trim($doc, "/");
