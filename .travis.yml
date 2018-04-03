@@ -1,9 +1,8 @@
 language: php
 php:
   - '7.1'
+  - '7.2'
 
 script:
-  - composer install
-  - phpunit Tests
-  - ./vendor/bin/phpcs --standard=PSR2 ./src
-  - ./vendor/bin/phpmd src text codesize,unusedcode,naming,cleancode,design
+  - composer update
+  - composer test
