@@ -16,104 +16,104 @@ final class Reader
     /**
      * @var string
      */
-    private $class_name;
+    private $className;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $method_name;
+    private $methodName;
 
     /**
      * @param string $annotation
-     * @param string $class_name
-     * @param string|null $method_name
+     * @param string $className
+     * @param string|null $methodName
      * @return mixed
      */
-    public function get(string $annotation, string $class_name, string $method_name = null)
+    public function get(string $annotation, string $className, string $methodName = null)
     {
-        $annotations = $this->getAll($class_name, $method_name);
+        $annotations = $this->getAll($className, $methodName);
 
         return !empty($annotations[$annotation]) ? $annotations[$annotation] : false;
     }
 
     /**
-     * @param string $class_name
-     * @param string|null $method_name
+     * @param string $className
+     * @param string|null $methodName
      * @return array
      */
-    public function getAll(string $class_name, string $method_name = null): array
+    public function getAll(string $className, string $methodName = null): array
     {
-        $this->class_name = $class_name;
-        $this->method_name = $method_name;
+        $this->className = $className;
+        $this->methodName = $methodName;
 
-        $raw = $this->getRawDoc($class_name, $method_name);
+        $raw = $this->getRawDoc($className, $methodName);
         $annotations = $this->parseAnnotation($raw);
 
         return $annotations;
     }
 
     /**
-     * @param string $class_name
+     * @param string $className
      * @param string $property
      * @return array
      */
-    public function getAllProperty(string $class_name, string $property): array
+    public function getAllProperty(string $className, string $property): array
     {
-        $reflection_class = new \ReflectionClass($class_name);
-        $raw = trim($reflection_class->getProperty($property)->getDocComment(), "/");
+        $reflectionClass = new \ReflectionClass($className);
+        $raw = trim($reflectionClass->getProperty($property)->getDocComment(), "/");
         $annotations = $this->parseAnnotation($raw);
 
         return $annotations;
     }
 
     /**
-     * @param string $class_name
-     * @param string|null $method_name
+     * @param string $className
+     * @param string|null $methodName
      * @return string
      */
-    private function getRawDoc(string $class_name, string $method_name = null): string
+    private function getRawDoc(string $className, string $methodName = null): string
     {
-        $reflection_class = new \ReflectionClass($class_name);
+        $reflectionClass = new \ReflectionClass($className);
 
-        $doc = $reflection_class->getDocComment();
+        $doc = $reflectionClass->getDocComment();
 
-        if ($method_name) {
-            $doc = $reflection_class->getMethod($method_name)->getDocComment();
+        if ($methodName) {
+            $doc = $reflectionClass->getMethod($methodName)->getDocComment();
         }
 
         return trim($doc, "/");
     }
 
     /**
-     * @param string $raw_doc
+     * @param string $rawDoc
      * @return array
      */
-    private function parseAnnotation(string $raw_doc): array
+    private function parseAnnotation(string $rawDoc): array
     {
-        preg_match_all("/@([A-Za-z0-9\\\\]+)([^@]*)/s", $raw_doc, $matches);
+        preg_match_all("/@([A-Za-z0-9\\\\]+)([^@]*)/s", $rawDoc, $matches);
 
         $annotations = [];
 
-        foreach ($matches[1] as $key => $annotation_name) {
-            $annotation_name = trim($annotation_name);
-            $annotation_value = $matches[2][$key];
+        foreach ($matches[1] as $key => $annotationName) {
+            $annotationName = trim($annotationName);
+            $annotationValue = $matches[2][$key];
 
-            $annotation_value = $this->cleanValue($annotation_value);
-            $annotation_value = $this->validateValue($annotation_name, $annotation_value);
+            $annotationValue = $this->cleanValue($annotationValue);
+            $annotationValue = $this->validateValue($annotationName, $annotationValue);
 
-            $annotations[$annotation_name] = $annotation_value;
+            $annotations[$annotationName] = $annotationValue;
         }
 
         return $annotations;
     }
 
     /**
-     * @param string $annotation_value
+     * @param string $annotationValue
      * @return string
      */
-    private function cleanValue(string $annotation_value): string
+    private function cleanValue(string $annotationValue): string
     {
-        $lines = explode("\n", $annotation_value);
+        $lines = explode("\n", $annotationValue);
         foreach ($lines as $key => $line) {
             $lines[$key] = trim($line, "* \t\r");
         }
@@ -125,23 +125,23 @@ final class Reader
      * @since 0.4 Now throw \Gephart\Annotation\Exception\NotValidJsonException
      * @since 0.2
      *
-     * @param string $annotation_name
-     * @param string $annotation_value
+     * @param string $annotationName
+     * @param string $annotationValue
      * @return mixed
      * @throws NotValidJsonException
      */
-    private function validateValue(string $annotation_name, string $annotation_value)
+    private function validateValue(string $annotationName, string $annotationValue)
     {
-        $annotation_value = str_replace("\\", "\\\\", $annotation_value);
-        $decode = json_decode($annotation_value, true);
+        $annotationValue = str_replace("\\", "\\\\", $annotationValue);
+        $decode = json_decode($annotationValue, true);
 
         if (json_last_error()) {
-            $decode = json_decode('"' . $annotation_value . '"', true);
+            $decode = json_decode('"' . $annotationValue . '"', true);
         }
 
         if (json_last_error()) {
-            $detail = "@" . $annotation_name . " in "
-                . $this->class_name . ($this->method_name ? "::" . $this->method_name : "");
+            $detail = "@" . $annotationName . " in "
+                . $this->className . ($this->methodName ? "::" . $this->methodName : "");
             throw new NotValidJsonException("Annotation value of '{$detail}' is not a valid JSON.");
         }
 
