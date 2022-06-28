@@ -1,7 +1,7 @@
 Gephart Annotation
 ===
 
-[![Build Status](https://travis-ci.org/gephart/annotation.svg?branch=master)](https://travis-ci.org/gephart/annotation)
+[![php](https://github.com/gephart/annotation/actions/workflows/php.yml/badge.svg?branch=master)](https://github.com/gephart/annotation/actions)
 
 Dependencies
 ---
