@@ -3,6 +3,8 @@
 namespace Gephart\Annotation;
 
 use Gephart\Annotation\Exception\NotValidJsonException;
+use ReflectionClass;
+use Exception;
 
 /**
  * Annotation Reader
@@ -39,7 +41,7 @@ final class Reader
     /**
      * @param string $className
      * @param string|null $methodName
-     * @return array
+     * @return array<mixed>
      */
     public function getAll(string $className, string $methodName = null): array
     {
@@ -55,12 +57,22 @@ final class Reader
     /**
      * @param string $className
      * @param string $property
-     * @return array
+     * @return array<mixed>
      */
     public function getAllProperty(string $className, string $property): array
     {
-        $reflectionClass = new \ReflectionClass($className);
-        $raw = trim($reflectionClass->getProperty($property)->getDocComment(), "/");
+        if (!class_exists($className)) {
+            throw new Exception("Class $className not exist.");
+        }
+
+        $reflectionClass = new ReflectionClass($className);
+        $doc = $reflectionClass->getProperty($property)->getDocComment();
+
+        if (!$doc) {
+            return [];
+        }
+
+        $raw = trim($doc, "/");
         $annotations = $this->parseAnnotation($raw);
 
         return $annotations;
@@ -73,7 +85,11 @@ final class Reader
      */
     private function getRawDoc(string $className, string $methodName = null): string
     {
-        $reflectionClass = new \ReflectionClass($className);
+        if (!class_exists($className)) {
+            throw new Exception("Class $className not exist.");
+        }
+
+        $reflectionClass = new ReflectionClass($className);
 
         $doc = $reflectionClass->getDocComment();
 
@@ -81,12 +97,16 @@ final class Reader
             $doc = $reflectionClass->getMethod($methodName)->getDocComment();
         }
 
+        if (!$doc) {
+            return "";
+        }
+
         return trim($doc, "/");
     }
 
     /**
      * @param string $rawDoc
-     * @return array
+     * @return array<mixed>
      */
     private function parseAnnotation(string $rawDoc): array
     {

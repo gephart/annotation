@@ -56,11 +56,9 @@ class ReaderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("INT(6)", $annotation["ORM\\Type"]);
     }
 
-    /**
-     * @expectedException \Gephart\Annotation\Exception\NotValidJsonException
-     */
     public function testException()
     {
+        $this->expectException(\Gephart\Annotation\Exception\NotValidJsonException::class);
         $reader = new \Gephart\Annotation\Reader();
         $reader->get("Template", SuperClass::class, "exception");
     }
