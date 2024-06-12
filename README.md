@@ -5,12 +5,12 @@ Gephart Annotation
 
 Dependencies
 ---
- - PHP >= 7.1
+ - PHP >= 7.4
 
 Instalation
 ---
 
-```
+```bash
 composer require gephart/annotation
 ```
 
@@ -20,7 +20,7 @@ Using
 @AnnotationName value
 @AnnotationName {"or anything":"in JSON"}
 
-```
+```php
 /**
  * @Route /home/
  */
